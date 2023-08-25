@@ -1,0 +1,19 @@
+<ion-content [fullscreen]="true">
+  <ion-list class="card-list">
+    <ion-card *ngFor="let recipe of favorites">
+      <ion-card-header>
+        <ion-card-subtitle>Generated at {{recipe.time}}</ion-card-subtitle>
+        <ion-card-title>{{recipe.title}}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content style="white-space: pre-wrap;">
+        {{recipe.text}}
+      </ion-card-content>
+      <div style="display: flex; justify-content: space-between;">
+        <ion-button fill="clear">
+          <ion-icon slot="icon-only" [name]="isFavorite(recipe) ? 'assets/star-filled.svg' : 'assets/star-outline.svg'"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-card>
+    <p style="color: #444444; text-align: center; padding-top: 10px; font-size: 12px; line-height: 1.5;">Looks like you've reached the end!<br>Try adding more recipes from browse!</p>
+  </ion-list>
+</ion-content>

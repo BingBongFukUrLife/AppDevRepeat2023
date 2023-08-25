@@ -1,0 +1,62 @@
+<ion-content [fullscreen]="true">
+  <!--cdk-virtual-scroll-viewport-- !-- why are you like this -->
+  <!--ion-virtual-scroll [items]="generated"-- !-- these should function on newer versions. -->
+
+  <!--
+
+    NOTE:
+    scrolling does not function because the website gets encapsulated in a shadow DOM
+    the styling for this is not accessible, and it overrides any other styling provided
+    Things tried: - searching through the DOM & HTML on live app
+                  - deleting the element, modifying the shadow dom from within the browser (this works, but it's manual...)
+                  - attempting to use virtual scroll (both of the above commented out do not work)
+                  - adding styling to the regular DOM (does not work)
+                  - injecting styling into the shadow DOM (does not work)
+                  - changing routing to try to circumvent certain encapsulation (does not work)
+                  - attempting to update to newer angular (works, only to realize, it is required to clone the repository with the current version)
+                  - asking AI and forums (also does not work lol)
+                  - maybe this is why newer versions came out?
+
+    You may notice because of this issue, on desktop displays it may show an additional scrollbar on this invisible layer.
+
+    Everything else should function normally, if only there wasn't an invisible layer stopping user interaction.
+    Please review the code to verify manually if needed.
+
+    Intended functionality: you scroll down, it generates more recipes.
+    You click a button, it does what it's supposed to.
+
+    The only layer that isn't covered is the navbar.
+
+  -->
+
+  <ng-container *ngIf="generated.length > 0; else loadingTemplate">
+    <ion-list class="card-list">
+      <ion-card *ngFor="let recipe of generated">
+        <ion-card-header>
+          <ion-card-subtitle>Generated at {{recipe.time}}</ion-card-subtitle>
+          <ion-card-title>{{recipe.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content style="white-space: pre-wrap;">
+          {{recipe.text}}
+        </ion-card-content>
+        <div style="display: flex; justify-content: space-between;">
+          <ion-button fill="clear" (click)="favorite(recipe)">
+            <ion-icon slot="icon-only" [name]="isFavorite(recipe) ? 'assets/star-filled.svg' : 'assets/star-outline.svg'"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-card>
+    </ion-list>
+  </ng-container>
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <ion-spinner></ion-spinner>
+      <p>Generating New Recipes...</p>
+      <p style="font-size: small; color: #242424;">(Requesting from OpenAI)</p>
+    </div>
+  </ng-template>
+  <!--/ion-virtual-scroll-->
+  <!--/cdk-virtual-scroll-viewport-->
+  <ion-infinite-scroll (ionInfinite)="scrolled($event)">
+    <ion-infinite-scroll-content loadingText="Creating more recipes..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
